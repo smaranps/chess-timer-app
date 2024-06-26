@@ -1,17 +1,28 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 
 export default function HomeScreen() {
-  const [user1Time, setuser1Time] = useState<number>(180);
+  const [user1Time, setuser1Time] = useState<number>(10);
   const [user1TimeRunning, setuser1TimeRunning] = useState<Boolean>(false);
   const [user2TimeRunning, setuser2TimeRunning] = useState<Boolean>(false);
-  const [user2Time, setuser2Time] = useState<number>(180);
-  const [user2TimeInterval, setUser2TimeInterval] =
-    useState<NodeJS.Timeout | null>(null);
-  const [user1TimeInterval, setUser1TimeInterval] =
-    useState<NodeJS.Timeout | null>(null);
+  const [user2Time, setuser2Time] = useState<number>(10);
+  const [user2TimeInterval, setUser2TimeInterval] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  const [user1TimeInterval, setUser1TimeInterval] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  useEffect(() => {
+    if (user1Time <= 0) {
+      clearInterval(user1TimeInterval);
+      Alert.alert("User 2 wins");
+    } else if (user2Time <= 0) {
+      clearInterval(user2TimeInterval);
+      Alert.alert("User 1 wins");
+    }
+  }, [user1Time, user2Time]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -21,29 +32,6 @@ export default function HomeScreen() {
           backgroundColor: user1TimeRunning ? "pink" : "green",
         }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            if (user1TimeRunning) {
-              return;
-            }
-            setuser2TimeRunning(false);
-            setuser1TimeRunning(true);
-            if (user2TimeInterval !== null) {
-              clearInterval(user2TimeInterval);
-            }
-            let user1ClockIntervalVar = setInterval(() => {
-              setuser1Time((user1Time) => user1Time - 1);
-            }, 1000);
-            setUser1TimeInterval(user1ClockIntervalVar);
-          }}
-        >
-          <Text style={{ fontSize: 70, textAlign: "center" }}>
-            {Math.floor(user1Time / 60)}:{user1Time % 60}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1, backgroundColor: "lightblue" }}></View>
-      <View style={{ flex: 5, backgroundColor: "yellow" }}>
         <TouchableOpacity
           onPress={() => {
             if (user2TimeRunning) {
@@ -59,6 +47,48 @@ export default function HomeScreen() {
               setuser2Time((user2Time) => user2Time - 1);
             }, 1000);
             setUser2TimeInterval(user2ClockIntervalVar);
+          }}
+          style={{
+            backgroundColor: "blue",
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 70,
+              textAlign: "center",
+            }}
+          >
+            {Math.floor(user1Time / 60)}:{user1Time % 60}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ flex: 1, backgroundColor: "lightblue" }}></View>
+      <View style={{ flex: 5, backgroundColor: "yellow" }}>
+        <TouchableOpacity
+          onPress={() => {
+            if (user1TimeRunning) {
+              return;
+            }
+            setuser2TimeRunning(false);
+            setuser1TimeRunning(true);
+            if (user2TimeInterval !== null) {
+              clearInterval(user2TimeInterval);
+            }
+            let user1ClockIntervalVar = setInterval(() => {
+              setuser1Time((user1Time) => user1Time - 1);
+            }, 1000);
+            setUser1TimeInterval(user1ClockIntervalVar);
+          }}
+          style={{
+            backgroundColor: "blue",
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           <Text style={{ fontSize: 70, textAlign: "center" }}>
