@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, Button } from "react-native";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 
 export default function HomeScreen() {
-  const [user1Time, setuser1Time] = useState<number>(10);
+  const [user1Time, setuser1Time] = useState<number>(60);
   const [user1TimeRunning, setuser1TimeRunning] = useState<Boolean>(false);
   const [user2TimeRunning, setuser2TimeRunning] = useState<Boolean>(false);
-  const [user2Time, setuser2Time] = useState<number>(10);
+  const [user2Time, setuser2Time] = useState<number>(60);
   const [user2TimeInterval, setUser2TimeInterval] = useState<
     NodeJS.Timeout | undefined
   >(undefined);
@@ -23,13 +23,20 @@ export default function HomeScreen() {
       Alert.alert("User 1 wins");
     }
   }, [user1Time, user2Time]);
-
+  const restartClock = (time: number) => {
+    clearInterval(user1TimeInterval);
+    clearInterval(user2TimeInterval);
+    setuser1Time(time);
+    setuser2Time(time);
+    setuser1TimeRunning(false);
+    setuser2TimeRunning(false);
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
           flex: 5,
-          backgroundColor: user1TimeRunning ? "pink" : "green",
+          backgroundColor: user1TimeRunning ? "#40916c" : "#40916c",
         }}
       >
         <TouchableOpacity
@@ -49,7 +56,7 @@ export default function HomeScreen() {
             setUser2TimeInterval(user2ClockIntervalVar);
           }}
           style={{
-            backgroundColor: "blue",
+            backgroundColor: "#74c69d",
             height: "100%",
             width: "100%",
             display: "flex",
@@ -62,12 +69,46 @@ export default function HomeScreen() {
               textAlign: "center",
             }}
           >
-            {Math.floor(user1Time / 60)}:{user1Time % 60}
+            {Math.floor(user1Time / 60)}:
+            {user1Time % 60 > 10 ? user1Time % 60 : "0" + (user1Time % 60)}
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, backgroundColor: "lightblue" }}></View>
-      <View style={{ flex: 5, backgroundColor: "yellow" }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#52b788",
+          justifyContent: "space-around",
+          alignItems: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Button
+          title="1:00"
+          onPress={() => {
+            restartClock(60);
+          }}
+        />
+        <Button
+          title="3:00"
+          onPress={() => {
+            restartClock(180);
+          }}
+        />
+        <Button
+          title="5:00"
+          onPress={() => {
+            restartClock(300);
+          }}
+        />
+        <Button
+          title="10:00"
+          onPress={() => {
+            restartClock(600);
+          }}
+        />
+      </View>
+      <View style={{ flex: 5, backgroundColor: "#40916c" }}>
         <TouchableOpacity
           onPress={() => {
             if (user1TimeRunning) {
@@ -84,7 +125,7 @@ export default function HomeScreen() {
             setUser1TimeInterval(user1ClockIntervalVar);
           }}
           style={{
-            backgroundColor: "blue",
+            backgroundColor: "#74c69d",
             height: "100%",
             width: "100%",
             display: "flex",
@@ -92,7 +133,8 @@ export default function HomeScreen() {
           }}
         >
           <Text style={{ fontSize: 70, textAlign: "center" }}>
-            {Math.floor(user2Time / 60)}:{user2Time % 60}
+            {Math.floor(user2Time / 60)}:
+            {user2Time % 60 > 10 ? user2Time % 60 : "0" + (user2Time % 60)}
           </Text>
         </TouchableOpacity>
       </View>

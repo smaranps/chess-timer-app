@@ -9,11 +9,10 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs 
+    <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        
       }}
     >
       <Tabs.Screen
@@ -36,7 +35,6 @@ export default function TabLayout() {
             <TabBarIcon
               name={focused ? "code-slash" : "code-slash-outline"}
               color={color}
-              style={{ position: "absolute", top: 50 }}
             />
           ),
         }}
